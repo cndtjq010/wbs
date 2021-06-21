@@ -12,6 +12,12 @@
           <span class="glyphicon glyphicon-pencil"></span></a>
           {% endif %}
         <h1>{{post.title}}</h1>
+        {% if post.file %}
+            <img src = "{{ post.file.url }}" alt="" height="400">
+            <video src="{{post.file.url}}" alt="" controls autoplay>
+            <br>
+        {% endif %}
         <p>{{post.text|linebreaksbr}}</p>
+
         </div>
   {% endblock %}
