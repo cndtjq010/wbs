@@ -27,4 +27,19 @@
           {{post.published_date}}
         </div>
     </div>
+    <form action="{% url 'post_detail' pk=post.pk %}" method="POST">
+{% csrf_token %}
+    <input type="text" name="text">
+    <input type="submit" value="Comment" class="btn btn-outline-primary">
+</form>
+
+<table class="table table-striped">
+    {% for comment in comments %}
+    <tr>
+        <td>{{comment.author}}</td>
+        <td>{{comment.text}}</td>
+        <td>{{comment.created}}</td>
+    </tr>
+    {% endfor %}
+</table>
 {% endblock %}

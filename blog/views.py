@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.utils import timezone
-from models import Post
-from .forms import PostForm
+from models import Post,Comment
+from .forms import PostForm,CommentForm
 from django.shortcuts import redirect
 from django.shortcuts import render, get_object_or_404
 import os
@@ -15,7 +15,15 @@ def post_list(request):
 
 def post_detail(request,pk):
     post=get_object_or_404(Post,pk=pk)
-    return render(request, 'blog/post_detail.html', {'post':post})
+    if request.method=="POST":
+        comment_form=CommentForm(request.POST)
+        comment_form.instance.author_id=request.user.id
+        comment_form.instance.document_id=pk
+        if comment_form.is_valid():
+            comment=comment_form.save()
+    comment_form=CommentForm()
+    comments=post.comments.all()
+    return render(request, 'blog/post_detail.html', {'post':post, 'comments':comments,'comment_form':comment_form})
 
 def post_new(request):
     if request.method== "POST":
@@ -49,12 +57,3 @@ def post_delete(request, pk):
     post = Post.objects.get(pk=pk)
     post.delete()
     return redirect('/')
-
-def post_download(request,path):
-    file_path = os.path.join(settings.MEDIA_ROOT, path)
-    if os.path.exists(file_path):
-        with open(file_path, 'rb') as fh:
-            response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
-            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
-            return response
-    raise Http404
