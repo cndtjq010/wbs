@@ -16,10 +16,12 @@
         <h1>{{post.title}}</h1>
           <p>{{post.text|linebreaksbr}}</p>
         {% if post.file %}
+        <a href="{{post.file.url}}" download>
         <video poster="{{post.file.url}}" autoplay >
             <source src="{{post.file.url}}">
     해당 브라우저는 video 태그를 지원하지 않습니다.
       </video>
+      </a>
         {% endif %}
         <div class="date">
           {{post.published_date}}
